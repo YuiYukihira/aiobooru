@@ -26,13 +26,18 @@ class RemovedException(Exception):
 
 @dataclass
 class Post:
-    id: int
-    url: str
+    json: dict
+
+    def __getattr__(self, attr):
+        try:
+            return self.json[attr]
+        except KeyError:
+            raise AttributeError(attr)
 
     _session: aiohttp.ClientSession
 
     async def bytes(self) -> bytes:
-        async with self._session.get(self.url) as resp:
+        async with self._session.get(self.file_url) as resp:
             if resp.status == 200:
                 return await resp.read()
 
@@ -68,7 +73,8 @@ class Booru:
         async with self._session.get(f'https://{self.site_url}/posts/{id}.json') as resp:
             if resp.status == 200:
                 json = await resp.json()
+                print(json)
                 if json["is_banned"]:
                     raise RemovedException(id)
-                post = Post(id=id, url=json["file_url"], _session=self._session)
+                post = Post(json=json, _session=self._session)
                 return post
