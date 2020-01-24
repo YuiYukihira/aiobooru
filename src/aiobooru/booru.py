@@ -73,7 +73,6 @@ class Booru:
         async with self._session.get(f'https://{self.site_url}/posts/{id}.json') as resp:
             if resp.status == 200:
                 json = await resp.json()
-                print(json)
                 if json["is_banned"]:
                     raise RemovedException(id)
                 post = Post(json=json, _session=self._session)
