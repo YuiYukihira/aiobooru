@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name="aiobooru",
-    version="0.1.1.post1",
+    version="0.1.2",
     author="Yui Yukihira",
     author_email="yuiyukihira1@gmail.com",
     description="A danbooru API helper using aiohttp",

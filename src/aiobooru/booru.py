@@ -2,10 +2,16 @@ import asyncio
 from dataclasses import dataclass, field
 
 import aiohttp
+import logging
+
+logger = logging.getLogger('aiobooru')
+
+
 try:
     import aiofiles
     _has_aiofiles = True
 except ImportError:
+    logger.warn('aiofiles is missing, you will not be able to save posts.')
     _has_aiofiles = False
 
 
@@ -77,3 +83,5 @@ class Booru:
                     raise RemovedException(id)
                 post = Post(json=json, _session=self._session)
                 return post
+            else:
+                logger.warn('Post with ID: %s came back with status: %s %s %s', id, resp.status, resp.reason, await resp.text())
